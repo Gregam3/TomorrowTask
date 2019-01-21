@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import request from 'superagent'
 import PureChart from 'react-native-pure-chart';
 
+//Included zone as if left blank would redirect international users to outside the UK
 const ZONE = 'GB';
 
 //TODO get actual energy targets, either researched or from other API
