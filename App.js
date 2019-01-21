@@ -41,24 +41,11 @@ export default class App extends React.Component {
 				}}>
 					{this.state.fossilFuelFreePercentage}%</Text>
 				<TouchableOpacity onPress={this.createKettleAlert}>
-					<Text style={{fontSize: 22, marginTop: 40, marginBottom: 60}}>☕ Click me to learn something ☕</Text>
+					<Text style={{fontSize: 22, marginTop: 40, marginBottom: 60}}>☕ Tap me to learn something ☕</Text>
 				</TouchableOpacity>
-				<PureChart data={[
-					{
-						value: 50,
-						label: 'Marketing',
-						color: 'red',
-					}, {
-						value: 40,
-						label: 'Sales',
-						color: 'blue'
-					},
-					{
-						value: 25,
-						label: 'Support',
-						color: 'green',
-					}]} type='pie'/>
 
+				{ (this.state.powerPieChart.length > 0) ?
+				<PureChart data={this.state.powerPieChart} type='pie'/> : <Text>Loading Pie Chart...</Text> }
 			</View>
 		);
 	}
@@ -68,7 +55,7 @@ export default class App extends React.Component {
 			'UK Energy Usage',
 			'The average UK citizen uses enough energy to boil ' + UK_MWH_PER_CAPITA / KETTLE_POWER_MW + ' kettles per hour.',
 			[
-				{text: 'OK', onPress: () => console.log('OK Pressed')}
+				{text: 'OK'}
 			],
 			{cancelable: true}
 		)
@@ -82,7 +69,8 @@ export default class App extends React.Component {
 	state = {
 		carbonIntensity: 0,
 		fossilFuelFreePercentage: 0.0,
-		renewablePercentage: 0.0
+		renewablePercentage: 0.0,
+		powerPieChart: []
 	};
 
 	constructor(props) {
@@ -104,12 +92,53 @@ export default class App extends React.Component {
 		request.get(API_ROOT_URL + 'power-consumption-breakdown/latest?zone=' + ZONE)
 			.set('auth-token', API_KEY)
 			.then(res => {
+				this.setState({
+					powerPieChart: App.convertPowerConsumptionToPieChartData(res.body.powerConsumptionBreakdown)
+				});
 				this.setState({fossilFuelFreePercentage: res.body.fossilFreePercentage});
 				this.setState({renewablePercentage: res.body.renewablePercentage});
 			}).catch(err => {
 			console.log(JSON.stringify(err));
 			return null;
 		})
+	};
+
+	static convertPowerConsumptionToPieChartData(powerConsumptionBreakdown) {
+		console.log(powerConsumptionBreakdown);
+
+		return [
+			{
+				label: 'Biomass',
+				value: powerConsumptionBreakdown.biomass,
+				color: '#6b4c38'
+			},
+			{
+				label: 'Coal🚂 ',
+				value: powerConsumptionBreakdown.coal,
+				color: '#000000'
+			},
+			{
+				label: 'Gas⛽',
+				value: powerConsumptionBreakdown.gas,
+				color: '#969693'
+			},
+			{
+				label: 'Any Hydro🌊',
+				value: powerConsumptionBreakdown.hydro + powerConsumptionBreakdown["hydro discharge"],
+				color: '#4ab1bf'
+			},
+			{
+				label: 'Nuclear☢️',
+				value: powerConsumptionBreakdown.nuclear,
+				color: '#efef34'
+			},
+			{
+				label: 'Solar🌞',
+				value: powerConsumptionBreakdown.wind,
+				color: '#ffffff'
+			}
+		];
+
 	}
 }
 
