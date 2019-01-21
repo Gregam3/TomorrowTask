@@ -3,8 +3,9 @@ import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import request from 'superagent'
 import PureChart from 'react-native-pure-chart';
 
-
 const ZONE = 'GB';
+
+//TODO get actual energy targets, either researched or from other API
 const UK_ARBITRARY_RENEWABLE_TARGET = 30;
 const UK_ARBITRARY_NON_FOSSIL_TARGET = 34;
 
@@ -105,6 +106,7 @@ export default class App extends React.Component {
 		super(props);
 	}
 
+	//TODO carbon intensity was never actually used, if I had more time it would have been nice to visualise maybe this amount of carbon could be produced with x trucks of coal.
 	retrieveCarbonIntensity() {
 		request.get(API_ROOT_URL + 'carbon-intensity/latest?zone=' + ZONE)
 			.set('auth-token', API_KEY)
@@ -121,19 +123,15 @@ export default class App extends React.Component {
 			.set('auth-token', API_KEY)
 			.then(res => {
 				this.setState({
-					powerPieChart: App.convertPowerConsumptionToPieChartData(res.body.powerConsumptionBreakdown)
+					powerPieChart: App.convertPowerConsumptionToPieChartData(res.body.powerConsumptionBreakdown),
+					fossilFuelFreePercentage: res.body.fossilFreePercentage,
+					renewablePercentage: res.body.renewablePercentage
 				});
-				this.setState({fossilFuelFreePercentage: res.body.fossilFreePercentage});
-				this.setState({renewablePercentage: res.body.renewablePercentage});
-			}).catch(err => {
-			console.log(JSON.stringify(err));
-			return null;
-		})
+				//TODO improve error handling to give a response to user
+			}).catch(null);
 	};
 
 	static convertPowerConsumptionToPieChartData(powerConsumptionBreakdown) {
-		console.log(powerConsumptionBreakdown);
-
 		return [
 			{
 				label: 'Biomass',
@@ -166,10 +164,10 @@ export default class App extends React.Component {
 				color: '#ffffff'
 			}
 		];
-
 	}
 }
 
+//TODO improve styling, redundant element styles are used.
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
