@@ -5,9 +5,7 @@
 
 ## Finished at 
 ![alt text](https://i.imgur.com/hyFHRAK.png)
-<<<<<<< Updated upstream
 
 ## Post-mortem (to be completed momentarily)
-=======
 
 Access here: (will add expo link)
