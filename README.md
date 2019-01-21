@@ -3,7 +3,7 @@
 ## The Plan
 ![alt text](https://i.imgur.com/AE2XArP.jpg)
 
-## Finished at 
+## Development Time
 ![alt text](https://i.imgur.com/hyFHRAK.png)
 
 
