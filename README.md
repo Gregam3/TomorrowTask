@@ -6,6 +6,5 @@
 ## Finished at 
 ![alt text](https://i.imgur.com/hyFHRAK.png)
 
-## Post-mortem (to be completed momentarily)
 
-Access here: (will add expo link)
+Access here: https://expo.io/@gregam3/tomorrow-task
