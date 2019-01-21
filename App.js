@@ -6,7 +6,7 @@ import PureChart from 'react-native-pure-chart';
 
 const ZONE = 'GB';
 const UK_ARBITRARY_RENEWABLE_TARGET = 30;
-const UK_ARBITRARY_NON_FOSSIL_TARGET = 32;
+const UK_ARBITRARY_NON_FOSSIL_TARGET = 34;
 
 const KETTLE_POWER_MW = 0.5;
 
@@ -15,7 +15,7 @@ const UK_MWH_PER_CAPITA = 33.82;
 
 const API_ROOT_URL = 'https://api.electricitymap.org/v3/';
 
-//Would usually store in environment variable but due to you running it easier if key accessible without config.
+//I would usually store in environment variable but due to you running it easier if key accessible without config.
 const API_KEY = 'rILfhiFrZ3emXcVMGU62';
 
 export default class App extends React.Component {
@@ -30,7 +30,11 @@ export default class App extends React.Component {
 				<TouchableOpacity onPress={App.createKettleAlert}>
 					<Text style={{fontSize: 22, marginTop: 40, marginBottom: 60}}>☕ Tap me to learn something ☕</Text>
 				</TouchableOpacity>
-
+				<Text style={{
+					fontSize: 22,
+					textAlign: 'center',
+					marginBottom: 20
+				}}> Energy Breakdown </Text>
 				{(this.state.powerPieChart.length > 0) ?
 					<PureChart data={this.state.powerPieChart} type='pie'/> : <Text>Loading Pie Chart...</Text>}
 			</View>
@@ -39,9 +43,10 @@ export default class App extends React.Component {
 
 	getRenewableTargetForRendering() {
 		return (<View>
-				<Text style={{fontSize: 22}}>Current UK renewable Energy:</Text>
+				<Text style={styles.heading}>Current UK renewable Energy:</Text>
 				<Text style={{
 					fontSize: 40,
+					textAlign: 'center',
 					color: this.state.renewablePercentage < UK_ARBITRARY_RENEWABLE_TARGET ? 'red' : 'green'
 				}}>
 					{this.state.renewablePercentage}%
@@ -57,16 +62,17 @@ export default class App extends React.Component {
 
 	getNonFossilTargetForRendering() {
 		return (<View>
-				<Text style={{fontSize: 22}}>Current UK non-fossil fuel Energy:</Text>
+				<Text style={styles.heading}>Current UK non-fossil fuel Energy:</Text>
 				<Text style={{
 					fontSize: 40,
+					textAlign: 'center',
 					color: this.state.fossilFuelFreePercentage < UK_ARBITRARY_NON_FOSSIL_TARGET ? 'red' : 'green'
 				}}>
 					{this.state.fossilFuelFreePercentage}%</Text>
 				<Text>
 					Great Britain is currently
 					{this.state.fossilFuelFreePercentage < UK_ARBITRARY_NON_FOSSIL_TARGET ? ' not ' : ' '}
-					 meeting its target of {UK_ARBITRARY_NON_FOSSIL_TARGET}%
+					meeting its target of {UK_ARBITRARY_NON_FOSSIL_TARGET}%
 				</Text>
 			</View>
 		);
@@ -172,5 +178,9 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		justifyContent: 'center',
 		fontSize: 16
+	},
+	heading: {
+		fontSize: 22,
+		textAlign: 'center'
 	}
 });
