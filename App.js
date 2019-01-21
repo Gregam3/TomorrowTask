@@ -23,6 +23,22 @@ export default class App extends React.Component {
 		console.log(this.state);
 		return (
 			<View style={styles.container}>
+				<Text style={{fontSize: 40, textAlign: 'center'}}>Great Britain's Energy </Text>
+				{this.getRenewableTargetForRendering()}
+				{this.getNonFossilTargetForRendering()}
+
+				<TouchableOpacity onPress={App.createKettleAlert}>
+					<Text style={{fontSize: 22, marginTop: 40, marginBottom: 60}}>☕ Tap me to learn something ☕</Text>
+				</TouchableOpacity>
+
+				{(this.state.powerPieChart.length > 0) ?
+					<PureChart data={this.state.powerPieChart} type='pie'/> : <Text>Loading Pie Chart...</Text>}
+			</View>
+		);
+	}
+
+	getRenewableTargetForRendering() {
+		return (<View>
 				<Text style={{fontSize: 22}}>Current UK renewable Energy:</Text>
 				<Text style={{
 					fontSize: 40,
@@ -30,27 +46,33 @@ export default class App extends React.Component {
 				}}>
 					{this.state.renewablePercentage}%
 				</Text>
-				<Text> Great Britain is
-					currently {this.state.renewablePercentage < UK_ARBITRARY_RENEWABLE_TARGET ? 'not ' : ''}
-					meeting its target of {UK_ARBITRARY_RENEWABLE_TARGET}%</Text>
+				<Text>
+					Great Britain is currently
+					{this.state.renewablePercentage < UK_ARBITRARY_RENEWABLE_TARGET ? ' not ' : ' '}
+					meeting its target of {UK_ARBITRARY_RENEWABLE_TARGET}%
+				</Text>
+			</View>
+		);
+	}
 
+	getNonFossilTargetForRendering() {
+		return (<View>
 				<Text style={{fontSize: 22}}>Current UK non-fossil fuel Energy:</Text>
 				<Text style={{
 					fontSize: 40,
 					color: this.state.fossilFuelFreePercentage < UK_ARBITRARY_NON_FOSSIL_TARGET ? 'red' : 'green'
 				}}>
 					{this.state.fossilFuelFreePercentage}%</Text>
-				<TouchableOpacity onPress={this.createKettleAlert}>
-					<Text style={{fontSize: 22, marginTop: 40, marginBottom: 60}}>☕ Tap me to learn something ☕</Text>
-				</TouchableOpacity>
-
-				{ (this.state.powerPieChart.length > 0) ?
-				<PureChart data={this.state.powerPieChart} type='pie'/> : <Text>Loading Pie Chart...</Text> }
+				<Text>
+					Great Britain is currently
+					{this.state.fossilFuelFreePercentage < UK_ARBITRARY_NON_FOSSIL_TARGET ? ' not ' : ' '}
+					 meeting its target of {UK_ARBITRARY_NON_FOSSIL_TARGET}%
+				</Text>
 			</View>
 		);
 	}
 
-	createKettleAlert = () => {
+	static createKettleAlert() {
 		Alert.alert(
 			'UK Energy Usage',
 			'The average UK citizen uses enough energy to boil ' + UK_MWH_PER_CAPITA / KETTLE_POWER_MW + ' kettles per hour.',
@@ -77,7 +99,7 @@ export default class App extends React.Component {
 		super(props);
 	}
 
-	retrieveCarbonIntensity = () => {
+	retrieveCarbonIntensity() {
 		request.get(API_ROOT_URL + 'carbon-intensity/latest?zone=' + ZONE)
 			.set('auth-token', API_KEY)
 			.then(res => {
@@ -88,7 +110,7 @@ export default class App extends React.Component {
 		})
 	};
 
-	retrievePowerConsumptionBreakdown = () => {
+	retrievePowerConsumptionBreakdown() {
 		request.get(API_ROOT_URL + 'power-consumption-breakdown/latest?zone=' + ZONE)
 			.set('auth-token', API_KEY)
 			.then(res => {
@@ -144,7 +166,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 40,
 		flex: 1,
 		backgroundColor: '#fff',
 		alignItems: 'center',
